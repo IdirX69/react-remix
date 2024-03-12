@@ -16,6 +16,7 @@ export const getAuthenticatedUser = async ({
         Authorization: `Baerer ${userToken}`,
       },
     });
+
     return await response.json();
   } catch (error) {
     console.error(error);

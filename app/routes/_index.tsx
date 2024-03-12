@@ -49,8 +49,7 @@ export default function Index() {
   const isConnected = user !== null;
   return (
     <div style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.8" }}>
-      <h1>Welcome to Remix</h1>
-      {isConnected ? <h1>Welcome {user.name}</h1> : <LoginForm />}
+      {isConnected ? <h1>Welcome {user.email}</h1> : <LoginForm />}
     </div>
   );
 }
