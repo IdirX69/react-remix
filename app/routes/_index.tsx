@@ -5,7 +5,7 @@ import type {
 } from "@remix-run/node";
 import { Form, json, useLoaderData } from "@remix-run/react";
 import { getAuthenticatedUser } from "~/auth.server";
-import { commitUserToken, getUserToken } from "~/session.server";
+import { commitUserToken } from "~/session.server";
 
 export const meta: MetaFunction = () => {
   return [
@@ -15,8 +15,8 @@ export const meta: MetaFunction = () => {
 };
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const user = await getAuthenticatedUser({ request });
-  const isLoggedIn = Boolean(user);
-  return json({ isLoggedIn });
+
+  return json({ user });
 };
 export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
@@ -44,16 +44,23 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 };
 
 export default function Index() {
-  const { isLoggedIn } = useLoaderData<typeof loader>();
+  const { user } = useLoaderData<typeof loader>();
+
+  const isConnected = user !== null;
   return (
     <div style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.8" }}>
       <h1>Welcome to Remix</h1>
-      <span>{isLoggedIn ? "Loged" : "Not logged"}</span>
-      <Form method="POST">
-        <input type="email" name="email" required />
-        <input type="password" name="password" required />
-        <button type="submit">Submit</button>
-      </Form>
+      {isConnected ? <h1>Welcome {user.name}</h1> : <LoginForm />}
     </div>
   );
 }
+
+const LoginForm = () => {
+  return (
+    <Form method="POST">
+      <input type="email" name="email" required />
+      <input type="password" name="password" required />
+      <button type="submit">Submit</button>
+    </Form>
+  );
+};

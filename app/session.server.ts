@@ -20,13 +20,7 @@ export const commitUserToken = async ({
   session.set("userToken", userToken);
   return await commitSession(session);
 };
-export const logout = async ({
-  request,
-  userToken,
-}: {
-  request: Request;
-  userToken: string;
-}) => {
+export const logout = async ({ request }: { request: Request }) => {
   const session = await getSession(request.headers.get("Cookie"));
   const desstroyedSession = await destroySession(session);
   return redirect("/", {
