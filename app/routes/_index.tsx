@@ -4,7 +4,8 @@ import type {
   MetaFunction,
 } from "@remix-run/node";
 import { Form, json, useLoaderData } from "@remix-run/react";
-import { commitUserToken } from "~/session.server";
+import { getAuthenticatedUser } from "~/auth.server";
+import { commitUserToken, getUserToken } from "~/session.server";
 
 export const meta: MetaFunction = () => {
   return [
@@ -13,16 +14,20 @@ export const meta: MetaFunction = () => {
   ];
 };
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  return json({ isLoggedIn: false });
+  const user = await getAuthenticatedUser({ request });
+  const isLoggedIn = Boolean(user);
+  return json({ isLoggedIn });
 };
 export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
   const jsonData = Object.fromEntries(formData);
+
   const response = await fetch("http://localhost:5000/auth/login", {
     method: "POST",
     body: JSON.stringify(jsonData),
     headers: { "Content-type": "application/json" },
   });
+
   const { access_token } = await response.json();
   console.log(access_token);
   return json(
