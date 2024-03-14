@@ -23,7 +23,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
   const jsonData = Object.fromEntries(formData);
-  console.log(jsonData);
 
   const response = await fetch("http://localhost:5000/auth/register", {
     method: "POST",
@@ -36,7 +35,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     return json({ error, message });
   }
   if (access_token) {
-    console.log(access_token);
     return await authenticateUser({ request, userToken: access_token });
   }
   return json({ error: true, message: "Une erreur inattendu est survenue !" });

@@ -30,7 +30,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   });
 
   const { access_token } = await response.json();
-  console.log(access_token);
+
   return authenticateUser({ request, userToken: access_token });
 };
 
@@ -38,9 +38,14 @@ export default function Index() {
   const { user } = useLoaderData<typeof loader>();
 
   const isConnected = user !== null;
+
   return (
     <div style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.8" }}>
-      {isConnected ? <h1>Welcome {user.email}</h1> : <LoginForm />}
+      {isConnected ? (
+        <h1>Welcome {user.id ? user.id : "lol"}</h1>
+      ) : (
+        <LoginForm />
+      )}
     </div>
   );
 }

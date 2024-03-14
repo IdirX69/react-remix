@@ -6,6 +6,8 @@ export const getAuthenticatedUser = async ({
   request: Request;
 }) => {
   const userToken = await getUserToken({ request });
+  console.log(userToken);
+
   if (userToken === undefined) {
     return null;
   }
@@ -13,11 +15,12 @@ export const getAuthenticatedUser = async ({
     const response = await fetch("http://localhost:5000/auth", {
       headers: {
         "Content-type": "application/json",
-        Authorization: `Baerer ${userToken}`,
+        Authorization: `Bearer ${userToken}`,
       },
     });
+    const data = await response.json();
 
-    return await response.json();
+    return data;
   } catch (error) {
     console.error(error);
     throw await logout({ request });
