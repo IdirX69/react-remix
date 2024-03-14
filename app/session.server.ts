@@ -1,4 +1,4 @@
-import { createCookieSessionStorage, redirect } from "@remix-run/node";
+import { createCookieSessionStorage, json, redirect } from "@remix-run/node";
 
 const { getSession, commitSession, destroySession } =
   createCookieSessionStorage({
@@ -25,5 +25,19 @@ export const logout = async ({ request }: { request: Request }) => {
   const desstroyedSession = await destroySession(session);
   return redirect("/", {
     headers: { "Set-Cookie": desstroyedSession },
+  });
+};
+export const authenticateUser = async ({
+  request,
+  userToken,
+}: {
+  request: Request;
+  userToken: string;
+}) => {
+  const createdSession = await commitUserToken({ request, userToken });
+  return redirect("/", {
+    headers: {
+      "Set-Cookie": createdSession,
+    },
   });
 };

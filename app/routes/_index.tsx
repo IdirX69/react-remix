@@ -6,6 +6,7 @@ import type {
 import { Form, json, useLoaderData } from "@remix-run/react";
 import { getAuthenticatedUser } from "~/auth.server";
 import { commitUserToken } from "~/session.server";
+import { authenticateUser } from "../session.server";
 
 export const meta: MetaFunction = () => {
   return [
@@ -30,17 +31,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
   const { access_token } = await response.json();
   console.log(access_token);
-  return json(
-    {},
-    {
-      headers: {
-        "Set-Cookie": await commitUserToken({
-          request,
-          userToken: access_token,
-        }),
-      },
-    }
-  );
+  return authenticateUser({ request, userToken: access_token });
 };
 
 export default function Index() {
