@@ -7,6 +7,7 @@ import { Form, json, useLoaderData } from "@remix-run/react";
 import { getAuthenticatedUser } from "~/auth.server";
 import { commitUserToken } from "~/session.server";
 import { authenticateUser } from "../session.server";
+import { useOptionalUser } from "~/root";
 
 export const meta: MetaFunction = () => {
   return [
@@ -14,11 +15,7 @@ export const meta: MetaFunction = () => {
     { name: "description", content: "Welcome to Remix!" },
   ];
 };
-export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const user = await getAuthenticatedUser({ request });
 
-  return json({ user });
-};
 export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
   const jsonData = Object.fromEntries(formData);
@@ -35,7 +32,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 };
 
 export default function Index() {
-  const { user } = useLoaderData<typeof loader>();
+  const { user } = useOptionalUser();
 
   const isConnected = user !== null;
 
