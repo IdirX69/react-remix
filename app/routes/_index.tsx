@@ -32,7 +32,8 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 };
 
 export default function Index() {
-  const { user } = useOptionalUser();
+  const user = useOptionalUser();
+  console.log(user);
 
   const isConnected = user !== null;
 

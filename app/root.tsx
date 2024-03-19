@@ -10,7 +10,6 @@ import {
   Scripts,
   ScrollRestoration,
   json,
-  useMatches,
   useRouteLoaderData,
 } from "@remix-run/react";
 import { getAuthenticatedUser } from "./auth.server";
