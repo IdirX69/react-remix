@@ -51,7 +51,9 @@ export default function RegisterForm() {
         required
         placeholder="Mot de passe"
       />
-      <input type="text" name="name" required placeholder="votre nom" />
+      <input type="text" name="firstname" required placeholder="votre prenom" />
+      <input type="text" name="lastname" required placeholder="votre nom" />
+      <input type="text" name="address" required placeholder="addresse" />
       <button type="submit">Crée un compte</button>
       {formFeedback?.message ? <span>{formFeedback?.message}</span> : null}
     </Form>
