@@ -7,6 +7,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   if (user) {
     redirect("/");
   }
+
   try {
     const urlParams = new URL(request.url).searchParams;
     const token = urlParams.get("token");
@@ -17,13 +18,13 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         headers: { "Content-type": "application/json" },
       }
     );
+
     const { error, message } = await response.json();
-    if (error) {
-      return json({ error, message, token });
-    }
+
+    return json({ error, message, token });
   } catch (error) {
     const err = error as Error;
-    return json({ error: true, message: err.message, token: "" });
+    return json({ error: true, message: err.message, token: "" }); // Returning an empty object as response
   }
 };
 
@@ -48,7 +49,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 export default function ForgotPasswordForm() {
   const { error, message, token } = useLoaderData<typeof loader>();
-  console.log(message);
+  console.log(error, token);
 
   if (!token) {
     return (
@@ -68,6 +69,21 @@ export default function ForgotPasswordForm() {
         {error?.message ? <p>Error:{error}</p> : null}
         Message:{message}
       </>
+    );
+  }
+  if (token && error === false) {
+    return (
+      <Form method="POST">
+        <h1>Changez de mot de passe </h1>
+        <input
+          type="password"
+          name="password"
+          required
+          placeholder="Choisissez un nouveau mot de passe"
+        />
+
+        <button type="submit">Récuperer mon mot de passe</button>
+      </Form>
     );
   }
 }

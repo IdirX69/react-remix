@@ -1,11 +1,6 @@
-import type {
-  ActionFunctionArgs,
-  LoaderFunctionArgs,
-  MetaFunction,
-} from "@remix-run/node";
-import { Form, json, useLoaderData } from "@remix-run/react";
-import { getAuthenticatedUser } from "~/auth.server";
-import { commitUserToken } from "~/session.server";
+import type { ActionFunctionArgs, MetaFunction } from "@remix-run/node";
+import { Form } from "@remix-run/react";
+
 import { authenticateUser } from "../session.server";
 import { useOptionalUser } from "~/root";
 
@@ -33,7 +28,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 export default function Index() {
   const user = useOptionalUser();
-  console.log(user);
 
   const isConnected = user !== null;
 
