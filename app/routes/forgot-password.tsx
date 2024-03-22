@@ -32,6 +32,8 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
   const jsonData = Object.fromEntries(formData);
 
+  console.log(jsonData);
+
   const response = await fetch(
     "http://localhost:5000/auth/request-reset-password",
     {
@@ -49,7 +51,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 export default function ForgotPasswordForm() {
   const { error, message, token } = useLoaderData<typeof loader>();
-  console.log(error, token);
 
   if (!token) {
     return (
@@ -60,6 +61,7 @@ export default function ForgotPasswordForm() {
 
           <button type="submit">Récuperer mon mot de passe</button>
         </Form>
+        <input type="hidden" name="action" value="request-password-reset" />
       </>
     );
   }
@@ -73,17 +75,24 @@ export default function ForgotPasswordForm() {
   }
   if (token && error === false) {
     return (
-      <Form method="POST">
-        <h1>Changez de mot de passe </h1>
-        <input
-          type="password"
-          name="password"
-          required
-          placeholder="Choisissez un nouveau mot de passe"
-        />
+      <>
+        <Form method="POST">
+          <h1>Changez de mot de passe </h1>
+          <input
+            type="password"
+            name="password"
+            required
+            placeholder="Choisissez un nouveau mot de passe"
+          />
 
-        <button type="submit">Récuperer mon mot de passe</button>
-      </Form>
+          <button type="submit">Récuperer mon mot de passe</button>
+        </Form>
+        <input
+          type="hidden"
+          name="action"
+          value="reset-passwordrequest-password-reset"
+        />
+      </>
     );
   }
 }
