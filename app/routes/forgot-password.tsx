@@ -34,18 +34,41 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
   console.log(jsonData);
 
-  const response = await fetch(
-    "http://localhost:5000/auth/request-reset-password",
-    {
-      method: "POST",
-      body: JSON.stringify(jsonData),
-      headers: { "Content-type": "application/json" },
-    }
-  );
+  const { action } = jsonData;
 
-  const { error, message } = await response.json();
-  if (error) {
-    return json({ error, message });
+  switch (action) {
+    case "request-password'reset":
+      {
+        const response = await fetch(
+          "http://localhost:5000/auth/request-reset-password",
+          {
+            method: "POST",
+            body: JSON.stringify(jsonData),
+            headers: { "Content-type": "application/json" },
+          }
+        );
+
+        const { error, message } = await response.json();
+        if (error) {
+          return json({ error, message });
+        }
+      }
+      break;
+    case "reset-password": {
+      const response = await fetch(
+        "http://localhost:5000/auth/reset-password",
+        {
+          method: "POST",
+          body: JSON.stringify(jsonData),
+          headers: { "Content-type": "application/json" },
+        }
+      );
+
+      const { error, message } = await response.json();
+      if (error) {
+        return json({ error, message });
+      }
+    }
   }
 };
 
