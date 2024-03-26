@@ -1,6 +1,11 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import { Form, json, redirect, useLoaderData } from "@remix-run/react";
 import { getAuthenticatedUser } from "~/auth.server";
+import { z } from "zod";
+
+const actionSchema = z.object({
+  action: z.enum(["request-reset-password", "reset-password"]),
+});
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const user = await getAuthenticatedUser({ request });
@@ -31,14 +36,15 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
   const jsonData = Object.fromEntries(formData);
+  const { action } = actionSchema.parse(jsonData);
 
-  console.log(jsonData);
+  const { password } = jsonData;
 
-  const { action } = jsonData;
+  console.log("action:" + action);
 
   switch (action) {
-    case "request-password'reset":
-      {
+    case "request-reset-password":
+      try {
         const response = await fetch(
           "http://localhost:5000/auth/request-reset-password",
           {
@@ -52,24 +58,36 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         if (error) {
           return json({ error, message });
         }
+      } catch (error) {
+        return json({ error: true, message: error.message });
       }
       break;
-    case "reset-password": {
-      const response = await fetch(
-        "http://localhost:5000/auth/reset-password",
-        {
-          method: "POST",
-          body: JSON.stringify(jsonData),
-          headers: { "Content-type": "application/json" },
-        }
-      );
 
-      const { error, message } = await response.json();
-      if (error) {
-        return json({ error, message });
+    case "reset-password": {
+      try {
+        const urlParams = new URL(request.url).searchParams;
+        const token = urlParams.get("token");
+
+        const response = await fetch(
+          "http://localhost:5000/auth/reset-password",
+          {
+            method: "POST",
+            body: JSON.stringify({ password, token }),
+            headers: { "Content-type": "application/json" },
+          }
+        );
+
+        const { error, message } = await response.json();
+        if (error) {
+          return json({ error, message });
+        }
+      } catch (error) {
+        return json({ error: true, message: error.message });
       }
+      break;
     }
   }
+  return null;
 };
 
 export default function ForgotPasswordForm() {
@@ -83,8 +101,8 @@ export default function ForgotPasswordForm() {
           <input type="email" name="email" required placeholder="Votre email" />
 
           <button type="submit">Récuperer mon mot de passe</button>
+          <input type="hidden" name="action" value="request-reset-password" />
         </Form>
-        <input type="hidden" name="action" value="request-password-reset" />
       </>
     );
   }
@@ -109,12 +127,8 @@ export default function ForgotPasswordForm() {
           />
 
           <button type="submit">Récuperer mon mot de passe</button>
+          <input type="hidden" name="action" value="reset-password" />
         </Form>
-        <input
-          type="hidden"
-          name="action"
-          value="reset-passwordrequest-password-reset"
-        />
       </>
     );
   }
