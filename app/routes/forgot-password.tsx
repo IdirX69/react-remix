@@ -29,7 +29,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     return json({ error, message, token });
   } catch (error) {
     const err = error as Error;
-    return json({ error: true, message: err.message, token: "" }); // Returning an empty object as response
+    return json({ error: true, message: err.message, token: "" });
   }
 };
 
