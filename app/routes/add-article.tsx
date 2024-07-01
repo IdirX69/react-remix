@@ -13,7 +13,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
   const jsonData = Object.fromEntries(formData);
 
-  const response = await fetch("http://localhost:5000/articles", {
+  const response = await fetch("http://localhost:5000/articles/upload", {
     method: "POST",
     body: JSON.stringify(jsonData),
     headers: { "Content-type": "application/json" },

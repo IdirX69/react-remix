@@ -40,8 +40,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
   const { password } = jsonData;
 
-  console.log("action:" + action);
-
   switch (action) {
     case "request-reset-password":
       try {

@@ -6,7 +6,6 @@ export const getAuthenticatedUser = async ({
   request: Request;
 }) => {
   const userToken = await getUserToken({ request });
-  console.log(userToken);
 
   if (userToken === undefined) {
     return null;
